@@ -350,8 +350,54 @@ class chip(PackObj):
         self.size_x = x
         self.size_y = y
         self.padlist = PadListObj(package)
+        self.macrolist = MacroListObj(self)
 
+class MacroListObj(PackObjList):
+    """
+    list of macros
+    """
+    def __init__(self,parent):
+        super().__init__("{}.macro_list".format(parent.id))
+        self.parent = parent
+
+    def add(self,id,x,y):
+        return(super().add(MacroObj(self.parent,id,x,y)))
         
+class MacroObj(PackObj):
+    """
+    object that collects the specification of a macro
+    
+    identifier: specifies the macro name
+    pos:        (x,y) tuple that specifies the macro positions in micrometer 
+    """
+    def __init__(self,parent,identifier, pos, boundary):
+        super().__init__(identifier)
+        self.parent = parent
+        self.pos = pos
+        self.boundary = boundary
+        self.plist = PadListObj(self)
+        self.mlist = MacroListObj(self)
+
+    """
+    draw macro boundary
+    """ 
+    def draw(self,canvas):
+
+        canvas.setStrokeColor(black)
+        canvas.setFillColor  (white)
+        canvas.setLineWidth(1)
+
+        canvas.translate(self.pos[0]*cm, self.pos[1]*cm)
+
+        p = canvas.beginPath()
+        start_point = self.boundary[0]
+        p.moveTo( start_point[0], start_point[1] )
+        for point in self.boundary:
+            p.lineTo( point[0]*cm, point[1]*cm )
+        p.lineTo( start_point[0], start_point[1] )
+        canvas.drawPath(p, fill=1, stroke=1)
+
+        canvas.translate(-self.pos[0]*cm, -self.pos[1]*cm)
 
 #=============
 # main program
@@ -394,14 +440,22 @@ my_package.pinlist.get("B2").connect( "SCK").color = darkgreen
 # chip description of mars
 #=========================
 CHIP_TOP = "mars"
-CHIP_XDIM = 3000
+CHIP_XDIM = 2500
 CHIP_YDIM = 3000
 mars = my_package.chiplist.add( CHIP_TOP,
-                                 CHIP_XDIM,
-                                 CHIP_YDIM )
+                                CHIP_XDIM,
+                                CHIP_YDIM )
 
 mars.padlist.add("MISO",1000,1000)
 mars.padlist.add("MOSI",2000,2000)
+
+mars.macrolist.add("LSHAPE", (500,700) ,
+                           [ (  0,  0) ,
+                             (200,  0) ,
+                             (200,150) ,
+                             (150,150) ,
+                             (150,100) ,
+                             (  0,100)  ])
 
 #=================
 # chip2 description

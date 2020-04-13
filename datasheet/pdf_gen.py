@@ -89,8 +89,8 @@ class floorplan_drawing(Flowable):
         canvas.drawPath(p, fill=1)
 
         self.chip.padlist.draw(canvas)
+        self.chip.macrolist.draw(canvas)
 
-        print("floorplan drawing scale:",self.scale)
 
 """
 draw cover sheet pinout
