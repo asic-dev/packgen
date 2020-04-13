@@ -368,13 +368,26 @@ class MacroObj(PackObj):
     object that collects the specification of a macro
     
     identifier: specifies the macro name
-    pos:        (x,y) tuple that specifies the macro positions in micrometer 
+    pos:        (x,y) tuple that specifies the macro positions in micrometer
+    boundary:   list of (x,y) tuple that specifies the boundary polygon;
+                specify only one tuple for a rectangular boundary 
     """
     def __init__(self,parent,identifier, pos, boundary):
         super().__init__(identifier)
         self.parent = parent
         self.pos = pos
-        self.boundary = boundary
+        
+        # if only one coordiate tuple is supplied as boundary create a rectangular boundary
+        if len(boundary) == 1:
+            max_x = boundary[0][0]
+            max_y = boundary[0][1]
+            self.boundary = [ (     0,     0) ,
+                              ( max_x,     0) ,
+                              ( max_x, max_y) ,
+                              (     0, max_y)  ]
+        else:
+            self.boundary = boundary
+            
         self.plist = PadListObj(self)
         self.mlist = MacroListObj(self)
 
@@ -449,13 +462,15 @@ mars = my_package.chiplist.add( CHIP_TOP,
 mars.padlist.add("MISO",1000,1000)
 mars.padlist.add("MOSI",2000,2000)
 
-mars.macrolist.add("LSHAPE", (500,700) ,
-                           [ (  0,  0) ,
-                             (200,  0) ,
-                             (200,150) ,
-                             (150,150) ,
-                             (150,100) ,
-                             (  0,100)  ])
+mars.macrolist.add("L-SHAPE", (500,700) ,
+                            [ (  0,  0) ,
+                              (200,  0) ,
+                              (200,150) ,
+                              (150,150) ,
+                              (150,100) ,
+                              (  0,100)  ])
+
+mars.macrolist.add("BOX-SHAPE", (700,700) , [ (200,100) ] )
 
 #=================
 # chip2 description

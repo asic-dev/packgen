@@ -72,13 +72,10 @@ class floorplan_drawing(Flowable):
         canvas.setStrokeColor(self.strokecolor)
         canvas.setFillColor(self.fillcolor)
         canvas.scale(self.scale, self.scale)
-#        canvas.translate(0,-0.3*cm)
         
         #draw package border
         canvas.setLineWidth(2/self.scale)
         p = canvas.beginPath()
-#        size_x   = self.chip.size_x/10000*cm
-#        size_y   = self.chip.size_y/10000*cm
         size_x   = self.chip.size_x*cm
         size_y   = self.chip.size_y*cm
         p.moveTo(         0,      0)
@@ -163,13 +160,32 @@ class datasheet:
     def pad_table(self,chip):
         doc_data = []
 
-        doc_data.append(Paragraph('Pad Table',self.style['Heading3']))
+        doc_data.append(Paragraph('Pad List',self.style['Heading3']))
         doc_data.append(Paragraph('''The pad table list the pads''',self.style['BodyText']))
         
         table_data = [("Net Name","Type","X","Y")]
         for pad in chip.padlist:
-#            doc_data.append(Paragraph(pad.id,self.style['BodyText']))
             table_data.append((pad.id,"signal",pad.x,pad.y))
+
+        table = Table(table_data)
+        table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
+                                   ('TEXTCOLOR',(0,0),(-1,-1),colors.black),
+                                   ('INNERGRID',(0,0),(-1,-1),0.25,colors.black),
+                                   ('BOX',(0,0),(-1,0),1,colors.black),
+                                   ('BOX',(0,0),(-1,-1),1,colors.black)]))
+        doc_data.append(table)
+
+        return(doc_data)
+        
+    def macro_table(self,chip):
+        doc_data = []
+
+        doc_data.append(PageBreak())
+        doc_data.append(Paragraph('Macro List',self.style['Heading3']))
+        
+        table_data = [("Macro","Position")]
+        for macro in chip.macrolist:
+            table_data.append((macro.id,"{},{}".format(macro.pos[0],macro.pos[1])))
 
         table = Table(table_data)
         table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
@@ -185,13 +201,14 @@ class datasheet:
         doc_data = []
 
         for chip in self.package.chiplist:
-            doc_data.append(Paragraph(chip.id,self.style['Heading2']))
+            doc_data.append(Paragraph("Chip: {}".format(chip.id),self.style['Heading2']))
     
-            doc_data.extend(self.pad_table(chip))
-
             doc_data.append(Paragraph('Floorplan',self.style['Heading3']))
             doc_data.append(floorplan_drawing(chip))
             
+            doc_data.extend(self.pad_table(chip))
+            doc_data.extend(self.macro_table(chip))
+
         return(doc_data)
 
     def write_pdf(self,filename):
