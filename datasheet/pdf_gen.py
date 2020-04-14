@@ -86,7 +86,7 @@ class floorplan_drawing(Flowable):
         canvas.drawPath(p, fill=1)
 
         self.chip.padlist.draw(canvas)
-        self.chip.macrolist.draw(canvas)
+        self.chip.instlist.draw(canvas)
 
 
 """
@@ -183,9 +183,9 @@ class datasheet:
         doc_data.append(PageBreak())
         doc_data.append(Paragraph('Macro List',self.style['Heading3']))
         
-        table_data = [("Macro","Position")]
-        for macro in chip.macrolist:
-            table_data.append((macro.id,"{},{}".format(macro.pos[0],macro.pos[1])))
+        table_data = [("Instance","Macro","Position")]
+        for instance in chip.instlist:
+            table_data.append((instance.id,instance.macro.id,"{},{}".format(instance.pos[0],instance.pos[1])))
 
         table = Table(table_data)
         table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
@@ -208,7 +208,16 @@ class datasheet:
             
             doc_data.extend(self.pad_table(chip))
             doc_data.extend(self.macro_table(chip))
+            doc_data.extend(self.macro_doc(chip.macrolist))
 
+        return(doc_data)
+
+    def macro_doc(self,macrolist):
+        doc_data = []
+
+        for macro in macrolist:
+            doc_data.append(Paragraph("Macro: {}".format(macro.id),self.style['Heading3']))
+        
         return(doc_data)
 
     def write_pdf(self,filename):

@@ -351,6 +351,7 @@ class chip(PackObj):
         self.size_y = y
         self.padlist = PadListObj(package)
         self.macrolist = MacroListObj(self)
+        self.instlist = MacroInstListObj(self)
 
 class MacroListObj(PackObjList):
     """
@@ -400,7 +401,6 @@ class MacroObj(PackObj):
         canvas.setFillColor  (white)
         canvas.setLineWidth(1)
 
-        canvas.translate(self.pos[0]*cm, self.pos[1]*cm)
 
         p = canvas.beginPath()
         start_point = self.boundary[0]
@@ -410,8 +410,44 @@ class MacroObj(PackObj):
         p.lineTo( start_point[0], start_point[1] )
         canvas.drawPath(p, fill=1, stroke=1)
 
-        canvas.translate(-self.pos[0]*cm, -self.pos[1]*cm)
 
+class MacroInstObj(PackObj):
+    """
+    macro instance object
+    
+    identifier: specifies the instance name
+    parent:     macro that instantiate this instance
+    pos:        (x,y) tuple that specifies the macro positions in micrometer
+    """
+    def __init__(self,parent,identifier, macro, pos):
+        super().__init__(identifier)
+        self.parent = parent
+        self.pos = pos
+        self.macro = parent.macrolist.get(macro)
+    """
+    draw macro boundary
+    """ 
+    def draw(self,canvas):
+        self.macro.draw(canvas)
+
+class MacroInstListObj(PackObjList):
+    """
+    list of macros instances
+    """
+    def __init__(self,parent):
+        super().__init__("{}.macro_instance_list".format(parent.id))
+        self.parent = parent
+
+    def add(self,id,ref,pos):
+        return(super().add(MacroInstObj(self.parent,id,ref,pos)))
+    
+    def draw(self,canvas):
+        for item in self:
+            canvas.translate(item.pos[0]*cm, item.pos[1]*cm)
+            item.draw(canvas)
+            canvas.translate(-item.pos[0]*cm, -item.pos[1]*cm)
+        
+        
 #=============
 # main program
 #=============
@@ -462,7 +498,7 @@ mars = my_package.chiplist.add( CHIP_TOP,
 mars.padlist.add("MISO",1000,1000)
 mars.padlist.add("MOSI",2000,2000)
 
-mars.macrolist.add("L-SHAPE", (500,700) ,
+mars.macrolist.add("L_SHAPE", (500,700) ,
                             [ (  0,  0) ,
                               (200,  0) ,
                               (200,150) ,
@@ -470,7 +506,12 @@ mars.macrolist.add("L-SHAPE", (500,700) ,
                               (150,100) ,
                               (  0,100)  ])
 
-mars.macrolist.add("BOX-SHAPE", (700,700) , [ (200,100) ] )
+mars.macrolist.add("BOX_SHAPE", (700,700) , [ (200,100) ] )
+
+mars.instlist.add("L_SHAPE_I1","L_SHAPE",( 500,700))
+mars.instlist.add("L_SHAPE_I2","L_SHAPE",( 700,700))
+mars.instlist.add("L_SHAPE_I3","L_SHAPE",( 900,700))
+mars.instlist.add("L_SHAPE_I4","L_SHAPE",(1100,700))
 
 #=================
 # chip2 description
