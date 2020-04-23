@@ -5,13 +5,16 @@ from reportlab.lib.units import cm
 from datasheet.pdf_gen import datasheet
 from packgen.lib import BGA
 
+from packgen.read_ballout import read_ballout
         
-        
+
 #=============
 # main program
 #=============
 
 print("\nBGA ball array generation script\n")
+
+read_ballout("spec/ball_out.xlsx")
 
 #=================
 # package creation

@@ -45,7 +45,7 @@ class PackObjList(PackObj):
         else:
             return(None)
 
-    """"
+    """
     plot all objects of the list
     
     The methode requires a cairo handle to the drawing
