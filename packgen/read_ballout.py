@@ -1,4 +1,5 @@
 from xlrd import open_workbook
+from _ast import Or
 
 def get_weight(table,x,y,type):
     if type == "xup":
@@ -143,23 +144,39 @@ def find_label(sheet,scope,type):
      
 #    print ("direction : {} -> {} -> {}".format(result["direction"],result["max_weight"],result["positions"]))
     
-    label=[]
+    label_list=[]
+    pos_dir={}
     for i in range(0,max_weight+1):
-#        print("cell:",sheet.cell_value(pos_list[0][1],pos_list[0][0]-i))
-        cell_value = ''
+        cell_y = pos_list[0][1]
+        cell_x = pos_list[0][0]
+        
         if max_dir == "xdown":
-            cell_value = sheet.cell_value(pos_list[0][1],pos_list[0][0]-i)
+            cell_x = cell_x-i
+            pos = cell_x
         elif max_dir == "xup":
-            cell_value = sheet.cell_value(pos_list[0][1],pos_list[0][0]+i)
+            cell_x = cell_x+i
+            pos = cell_x
         elif max_dir == "ydown":
-            cell_value = sheet.cell_value(pos_list[0][1]-i,pos_list[0][0])
+            cell_y = cell_y-i
+            pos = cell_y
         elif max_dir == "yup":
-            cell_value = sheet.cell_value(pos_list[0][1]+i,pos_list[0][0])
+            cell_y = cell_y+i
+            pos = cell_y
 
+        cell_value = sheet.cell_value(cell_y,cell_x)
         if type == "num":
-            label.append(int(float(cell_value)))
-        else:
-            label.append(cell_value)
+            cell_value = int(float(cell_value))
+
+        label_list.append(cell_value)
+        pos_dir[cell_value] = pos
+
+        print("cell:",cell_value,pos)
+        
+        label = {
+            "label_list" : label_list,
+            "pos_dir"    : pos_dir,
+            "type"       : max_dir
+        }
 
 #    print ("label:",label)
     
@@ -182,6 +199,19 @@ def read_ballout (spec_file,sheet_name=None,scope=None):
  
     num_label = find_label(sheet,scope,"num")
     alpha_label = find_label(sheet,scope,"alpha")
+    
+    ball_out={}
+    for num_id in num_label["label_list"]:
+        for alpha_id in alpha_label["label_list"]:
+            if ( (num_label["type"] == "xdown") or
+                 (num_label["type"] == "xup") ):
+                id = "{}{}".format(alpha_id,num_id)
+                cell_value = sheet.cell_value(alpha_label["pos_dir"][alpha_id],num_label["pos_dir"][num_id])
+                print("read out:",id,cell_value)
+                if len(cell_value)>0:
+                    ball_out[id] = cell_value
+
+    print("ballout:",ball_out)
 
     assert num_label is not None, "could not extract num label specification"
     
