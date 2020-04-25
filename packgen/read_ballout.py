@@ -104,7 +104,7 @@ def convert_sheet(sheet,scope,type):
     for x in range(xmin,xmax):
         line = []
         for y in range(ymin,ymax):
-            item = -1
+            item = -2
             try:
                 if type == "num":
                     item = int(float(sheet.cell_value(x,y)))
@@ -142,7 +142,7 @@ def find_label(sheet,scope,type):
         "direction"  : max_dir
     }
      
-#    print ("direction : {} -> {} -> {}".format(result["direction"],result["max_weight"],result["positions"]))
+    print ("direction : {} -> {} -> {}".format(result["direction"],result["max_weight"],result["positions"]))
     
     label_list=[]
     pos_dir={}
@@ -164,13 +164,14 @@ def find_label(sheet,scope,type):
             pos = cell_y
 
         cell_value = sheet.cell_value(cell_y,cell_x)
+        print("cell:",cell_value,cell_y,cell_x)
         if type == "num":
             cell_value = int(float(cell_value))
 
         label_list.append(cell_value)
         pos_dir[cell_value] = pos
 
-        print("cell:",cell_value,pos)
+#        print("cell:",cell_value,pos)
         
         label = {
             "label_list" : label_list,
@@ -185,7 +186,7 @@ def find_label(sheet,scope,type):
 def read_ballout (spec_file,sheet_name=None,scope=None):
 
     wb = open_workbook(spec_file)
-    print ("number of sheets: {}".format(len(wb.sheet_names())))
+#    print ("number of sheets: {}".format(len(wb.sheet_names())))
     
     sheet = None
     
@@ -207,14 +208,16 @@ def read_ballout (spec_file,sheet_name=None,scope=None):
                  (num_label["type"] == "xup") ):
                 id = "{}{}".format(alpha_id,num_id)
                 cell_value = sheet.cell_value(alpha_label["pos_dir"][alpha_id],num_label["pos_dir"][num_id])
-                print("read out:",id,cell_value)
+#                print("read out:",id,cell_value)
                 if len(cell_value)>0:
                     ball_out[id] = cell_value
 
-    print("ballout:",ball_out)
+#    print("ballout:",ball_out)
 
     assert num_label is not None, "could not extract num label specification"
     
-    print("num_label:",num_label)
-    print("alpha_label:",alpha_label)
+#    print("num_label:",num_label)
+#    print("alpha_label:",alpha_label)
+    
+    return(ball_out)
 

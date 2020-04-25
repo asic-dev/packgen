@@ -14,28 +14,35 @@ from packgen.read_ballout import read_ballout
 
 print("\nBGA ball array generation script\n")
 
-read_ballout("spec/ball_out.xlsx")
-
 #=================
 # package creation
 #=================
-my_package = BGA(10,10)
+my_package = BGA(8,8)
 
 # refine package by removing some balls
-my_package.pinlist.remove("J6","I7","G4")    
+#my_package.pinlist.remove("J6","I7","G4")    
+
+# create a ball out dictionary from an Excel table
+ball_out = read_ballout("spec/ball_out.xlsx")
+print(ball_out)
+for ball in ball_out:
+    print("ball:",ball)
+    my_package.pinlist.get(ball).connect(ball_out[ball])
+
 
 #=========================================
 # package to chip connectivity description
 #=========================================
 # connect VDDD_0P8V supply net
-for item_id in ["A0","A3","C0","C3"]:
-    my_package.pinlist.get(item_id).connect("VDDD_0P8V")
+#for item_id in ["A0","A3","C0","C3"]:
+#    my_package.pinlist.get(item_id).connect("VDDD_0P8V")
+
 # change VDDD_0P8V color to red    
-my_package.netlist.get("VDDD_0P8V").color = [1,0,0]
+my_package.netlist.get("VDDA").color = [1,0,0]
 
 # connect GNDD supply net
-for item_id in ["C1","C2"]:
-    my_package.pinlist.get(item_id).connect("GNDD")
+#for item_id in ["C1","C2"]:
+#    my_package.pinlist.get(item_id).connect("GNDD")
 # change VDDD_0P8V color to black
 my_package.netlist.get("GNDD").color = [0,0,0]
 
@@ -43,9 +50,9 @@ my_package.netlist.get("GNDD").color = [0,0,0]
 #my_package.pinlist.remove("J6")    
 
 darkgreen = [0,0.5,0]
-my_package.pinlist.get("B0").connect("MISO").color = darkgreen
-my_package.pinlist.get("B1").connect("MOSI").color = darkgreen
-my_package.pinlist.get("B2").connect( "SCK").color = darkgreen
+#my_package.pinlist.get("B0").connect("MISO").color = darkgreen
+#my_package.pinlist.get("B1").connect("MOSI").color = darkgreen
+#my_package.pinlist.get("B2").connect( "SCK").color = darkgreen
 
 #=========================
 # chip description of mars
