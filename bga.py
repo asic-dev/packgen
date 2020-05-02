@@ -6,6 +6,7 @@ from datasheet.pdf_gen import datasheet
 from packgen.lib import BGA
 
 from packgen.read_ballout import read_ballout
+from packgen.gen_pad_vlog import gen_pad_vlog
         
 
 #=============
@@ -105,3 +106,4 @@ my_datasheet.write_pdf("datasheet.pdf")
 from packgen.spec import SpecObj
 test_spec = SpecObj()
 
+gen_pad_vlog("test.v",mars.padlist)
