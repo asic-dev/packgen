@@ -12,7 +12,7 @@ class PackObj:
     """ 
     
     def __init__(self,object_id):
-        print("PackObj: created ",object_id)
+#        print("PackObj: created ",object_id)
         self.id = object_id
         
     def check(self):
@@ -194,7 +194,7 @@ class MacroInstListObj(PackObjList):
             canvas.translate(item.pos[0]*cm, item.pos[1]*cm)
             item.draw(canvas)
             canvas.translate(-item.pos[0]*cm, -item.pos[1]*cm)
-
+            
 class PadListObj(PackObjList):
     """
     pad list object is a list of pads
@@ -204,9 +204,10 @@ class PadListObj(PackObjList):
         self.package = package
 
     def add(self,id,x,y):
-        pad = PinObj(self.package,id,x,y)
+        pad = PadObj(self.package,id,x,y)
         pad.r = 50
         super().add(pad)
+        return(pad)
     
         
 class NetObj(PackObj):
@@ -231,6 +232,7 @@ class PinObj(PackObj):
     """
     def __init__(self,package,object_id,x,y):
         super().__init__(object_id)
+        self.type = "pin"
         self.package = package
         self.connected_net = None
         self.x = x
@@ -354,6 +356,11 @@ class PinObj(PackObj):
         else:
             s = self.connected_net.id
         canvas.drawCentredString(self.x*cm, self.y*cm-4*self.r, s)
+
+class PadObj(PinObj):
+    def __init__(self,package,id,x,y):
+        super().__init__(package,id,x,y)
+        self.type = "pad"
 
 class ChipListObj(PackObjList):
     """

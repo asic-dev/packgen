@@ -64,8 +64,8 @@ mars = my_package.chiplist.add( CHIP_TOP,
                                 CHIP_XDIM,
                                 CHIP_YDIM )
 
-mars.padlist.add("MISO",1000,1000)
-mars.padlist.add("MOSI",2000,2000)
+mars.padlist.add("MISO_inst",1000,1000).connect("MISO")
+mars.padlist.add("MOSI_inst",2000,2000)
 
 mars.macrolist.add("L_SHAPE", (500,700) ,
                             [ (  0,  0) ,
@@ -101,4 +101,7 @@ my_package.check()
 
 my_datasheet = datasheet("ABC123",my_package)
 my_datasheet.write_pdf("datasheet.pdf")
+
+from packgen.spec import SpecObj
+test_spec = SpecObj()
 

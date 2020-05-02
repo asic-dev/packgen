@@ -141,10 +141,11 @@ class datasheet:
         for net in self.package.netlist:
             pins = None
             for pin in net.pinlist:
-                if pins is None:
-                    pins = pin.id
-                else:
-                    pins = pins + "," +pin.id
+                if pin.type == "pin":
+                    if pins is None:
+                        pins = pin.id
+                    else:
+                        pins = pins + "," +pin.id
             table_data.append((net.id,pins))
         
         table = Table(table_data)
@@ -163,9 +164,13 @@ class datasheet:
         doc_data.append(Paragraph('Pad List',self.style['Heading3']))
         doc_data.append(Paragraph('''The pad table list the pads''',self.style['BodyText']))
         
-        table_data = [("Net Name","Type","X","Y")]
+        table_data = [("Instance","Type","Net","X","Y")]
         for pad in chip.padlist:
-            table_data.append((pad.id,"signal",pad.x,pad.y))
+            try:
+                net = pad.connected_net.id
+            except:
+                net = ""
+            table_data.append((pad.id,"signal",net,pad.x,pad.y))
 
         table = Table(table_data)
         table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
