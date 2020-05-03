@@ -109,8 +109,8 @@ class MacroListObj(PackObjList):
         super().__init__("{}.macro_list".format(parent.id))
         self.parent = parent
 
-    def add(self,id,x,y):
-        return(super().add(MacroObj(self.parent,id,x,y)))
+    def add(self,id,boundary):
+        return(super().add(MacroObj(self.parent,id,boundary)))
         
 class MacroObj(PackObj):
     """
@@ -121,10 +121,9 @@ class MacroObj(PackObj):
     boundary:   list of (x,y) tuple that specifies the boundary polygon;
                 specify only one tuple for a rectangular boundary 
     """
-    def __init__(self,parent,identifier, pos, boundary):
+    def __init__(self,parent,identifier, boundary):
         super().__init__(identifier)
         self.parent = parent
-        self.pos = pos
         
         # if only one coordiate tuple is supplied as boundary create a rectangular boundary
         if len(boundary) == 1:
