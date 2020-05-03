@@ -83,7 +83,34 @@ class PackObjList(PackObj):
             else:
                 raise RuntimeError("item " + item + " not found")
 
+class ShapeObj(PackObj):
+    """
+    generic shape object that draws the boundary
+    
+    identifier: specifies the shape name
+    boundary:   list of (x,y) tuple that specifies the boundary polygon;
+                specify only one tuple for a rectangular boundary 
+    """
+    def __init__(self, identifier, boundary):
+        super().__init__(identifier)
+        self.boundary = boundary
 
+    """
+    draw shape boundary
+    """ 
+    def draw(self,canvas):
+
+        canvas.setStrokeColor(black)
+        canvas.setFillColor  (white)
+        canvas.setLineWidth(1)
+
+        p = canvas.beginPath()
+        start_point = self.boundary[0]
+        p.moveTo( start_point[0], start_point[1] )
+        for point in self.boundary:
+            p.lineTo( point[0]*cm, point[1]*cm )
+        p.lineTo( start_point[0], start_point[1] )
+        canvas.drawPath(p, fill=1, stroke=1)
 
 class chip(PackObj):
     """
@@ -97,7 +124,7 @@ class chip(PackObj):
         print("chip: create chip object",identifier)
         self.size_x = x
         self.size_y = y
-        self.padlist = PadListObj(package)
+        self.padlist = PadListObj(self)
         self.macrolist = MacroListObj(self)
         self.instlist = MacroInstListObj(self)
 
@@ -112,50 +139,30 @@ class MacroListObj(PackObjList):
     def add(self,id,boundary):
         return(super().add(MacroObj(self.parent,id,boundary)))
         
-class MacroObj(PackObj):
+class MacroObj(ShapeObj):
     """
     object that collects the specification of a macro
     
     identifier: specifies the macro name
-    pos:        (x,y) tuple that specifies the macro positions in micrometer
     boundary:   list of (x,y) tuple that specifies the boundary polygon;
                 specify only one tuple for a rectangular boundary 
     """
     def __init__(self,parent,identifier, boundary):
-        super().__init__(identifier)
-        self.parent = parent
-        
+
         # if only one coordiate tuple is supplied as boundary create a rectangular boundary
         if len(boundary) == 1:
             max_x = boundary[0][0]
             max_y = boundary[0][1]
-            self.boundary = [ (     0,     0) ,
-                              ( max_x,     0) ,
-                              ( max_x, max_y) ,
-                              (     0, max_y)  ]
-        else:
-            self.boundary = boundary
+            boundary = [ (     0,     0) ,
+                         ( max_x,     0) ,
+                         ( max_x, max_y) ,
+                         (     0, max_y)  ]
+
+        super().__init__(identifier,boundary)
+        self.parent = parent
             
         self.plist = PadListObj(self)
         self.mlist = MacroListObj(self)
-
-    """
-    draw macro boundary
-    """ 
-    def draw(self,canvas):
-
-        canvas.setStrokeColor(black)
-        canvas.setFillColor  (white)
-        canvas.setLineWidth(1)
-
-
-        p = canvas.beginPath()
-        start_point = self.boundary[0]
-        p.moveTo( start_point[0], start_point[1] )
-        for point in self.boundary:
-            p.lineTo( point[0]*cm, point[1]*cm )
-        p.lineTo( start_point[0], start_point[1] )
-        canvas.drawPath(p, fill=1, stroke=1)
 
 
 class MacroInstObj(PackObj):
@@ -198,12 +205,12 @@ class PadListObj(PackObjList):
     """
     pad list object is a list of pads
     """
-    def __init__(self,package):
+    def __init__(self,chip):
         super().__init__("pad_list")
-        self.package = package
+        self.chip = chip
 
-    def add(self,id,x,y):
-        pad = PadObj(self.package,id,x,y)
+    def add(self,id,ref,x,y):
+        pad = PadInstObj(id,self.chip.macrolist.get(ref),x,y)
         pad.r = 50
         super().add(pad)
         return(pad)
@@ -356,10 +363,24 @@ class PinObj(PackObj):
             s = self.connected_net.id
         canvas.drawCentredString(self.x*cm, self.y*cm-4*self.r, s)
 
-class PadObj(PinObj):
-    def __init__(self,package,id,x,y):
-        super().__init__(package,id,x,y)
+class PadInstObj(PackObj):
+    """
+    Pad instance object
+    """
+    def __init__(self,id,ref,x,y):
+        super().__init__(id)
         self.type = "pad"
+        self.ref = ref
+        self.x = x
+        self.y = y
+
+    """
+    draw macro boundary
+    """ 
+    def draw(self,canvas):
+        canvas.translate(self.x*cm, self.y*cm)
+        self.ref.draw(canvas)
+        canvas.translate(-self.x*cm, -self.y*cm)
 
 class ChipListObj(PackObjList):
     """
