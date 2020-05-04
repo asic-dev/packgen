@@ -211,7 +211,6 @@ class PadListObj(PackObjList):
 
     def add(self,id,ref,x,y):
         pad = PadInstObj(id,self.chip.macrolist.get(ref),x,y)
-        pad.r = 50
         super().add(pad)
         return(pad)
     

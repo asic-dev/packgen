@@ -88,6 +88,34 @@ class floorplan_drawing(Flowable):
         self.chip.padlist.draw(canvas)
         self.chip.instlist.draw(canvas)
 
+"""
+draw the macro
+"""
+class macro_drawing(Flowable):
+    def __init__(self, macro, fillcolor=white, strokecolor=black):
+        self.fillcolor, self.strokecolor = fillcolor, strokecolor
+        self.macro = macro
+        self.macro.width = 200
+        self.macro.height = 200
+    def wrap(self, *args):
+        return (self.macro.width, self.macro.height)
+    def draw(self):
+        canvas = self.canv
+        canvas.setStrokeColor(self.strokecolor)
+        canvas.setFillColor(self.fillcolor)
+ #       canvas.scale(self.scale, self.scale)
+        
+        #draw package border
+#        canvas.setLineWidth(2/self.scale)
+        p = canvas.beginPath()
+#        size_x   = self.chip.size_x*cm
+#        size_y   = self.chip.size_y*cm
+        p.moveTo(         0,      0)
+        for point in self.macro.boundary:
+            p.lineTo(point[0],point[1])
+        p.close()
+        canvas.drawPath(p, fill=1)
+
 
 """
 draw cover sheet pinout
@@ -222,6 +250,8 @@ class datasheet:
 
         for macro in macrolist:
             doc_data.append(Paragraph("Macro: {}".format(macro.id),self.style['Heading3']))
+            doc_data.append(Paragraph("Floorplan",self.style['Heading4']))
+            doc_data.append(macro_drawing(macro))
         
         return(doc_data)
 
