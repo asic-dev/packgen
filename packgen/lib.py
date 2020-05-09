@@ -99,17 +99,16 @@ class ShapeObj(PackObj):
     draw shape boundary
     """ 
     def draw(self,canvas):
-
         canvas.setStrokeColor(black)
         canvas.setFillColor  (white)
         canvas.setLineWidth(1)
 
         p = canvas.beginPath()
         start_point = self.boundary[0]
-        p.moveTo( start_point[0], start_point[1] )
+        p.moveTo( start_point[0]*cm, start_point[1]*cm )
         for point in self.boundary:
             p.lineTo( point[0]*cm, point[1]*cm )
-        p.lineTo( start_point[0], start_point[1] )
+        p.lineTo( start_point[0]*cm, start_point[1]*cm )
         canvas.drawPath(p, fill=1, stroke=1)
 
 class chip(PackObj):
@@ -239,6 +238,7 @@ class NetObj(PackObj):
         self.color = None
 
 class MacroPinObj(ShapeObj):
+    
     def __init__(self,id,pos):
             boundary = [ ( -1, -1) ,
                          (  1, -1) ,

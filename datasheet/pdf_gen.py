@@ -103,19 +103,9 @@ class macro_drawing(Flowable):
         canvas = self.canv
         canvas.setStrokeColor(self.strokecolor)
         canvas.setFillColor(self.fillcolor)
- #       canvas.scale(self.scale, self.scale)
+        canvas.scale(0.05,0.05)
         
-        #draw package border
-#        canvas.setLineWidth(2/self.scale)
-        p = canvas.beginPath()
-#        size_x   = self.chip.size_x*cm
-#        size_y   = self.chip.size_y*cm
-        p.moveTo(         0,      0)
-        for point in self.macro.boundary:
-            p.lineTo(point[0],point[1])
-        p.close()
-        canvas.drawPath(p, fill=1)
-#        self.macro.draw(canvas)
+        self.macro.draw(canvas)
 
 
 """
