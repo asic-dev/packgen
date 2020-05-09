@@ -65,12 +65,12 @@ mars = my_package.chiplist.add( CHIP_TOP,
                                 CHIP_XDIM,
                                 CHIP_YDIM )
 
-mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
-                               (200,  0) ,
-                               (200,150) ,
-                               (150,150) ,
-                               (150,100) ,
-                               (  0,100)  ])
+lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
+                                        (200,  0) ,
+                                        (200,150) ,
+                                        (150,150) ,
+                                        (150,100) ,
+                                        (  0,100)  ])
 
 mars.macrolist.add("BOX_SHAPE", [ (200,100) ] )
 
@@ -86,6 +86,10 @@ mars.instlist.add("B_SHAPE_I1","BOX_SHAPE",(200,1000))
 
 mars.padlist.add("MISO_inst","GPIO_PAD_H",1000,1000)
 mars.padlist.add("MOSI_inst","GPIO_PAD_H",2000,2000)
+
+print("LSHAPE:",lshape)
+lshape.add_pin("input_ena",(10,10))
+lshape.add_pin("output_ena",(20,10))
 
 #=================
 # chip2 description

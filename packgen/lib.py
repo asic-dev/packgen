@@ -161,9 +161,21 @@ class MacroObj(ShapeObj):
         super().__init__(identifier,boundary)
         self.parent = parent
             
-        self.plist = PadListObj(self)
+        self.plist = PackObjList(self)
         self.mlist = MacroListObj(self)
+        
+    def add_pin(self,id,pos=None):
+        print("MacroObj.add_pin:",id)
+        if pos is None:
+            return()
+        self.plist.add(MacroPinObj(id,pos))
 
+    def draw(self,canvas):
+        super().draw(canvas)
+        for pin in self.plist:
+            canvas.translate(pin.pos[0]*cm, pin.pos[1]*cm)
+            pin.draw(canvas)
+            canvas.translate(-pin.pos[0]*cm, -pin.pos[1]*cm)
 
 class MacroInstObj(PackObj):
     """
@@ -225,6 +237,17 @@ class NetObj(PackObj):
         self.pinlist = PackObjList("pinlist")
         self.padlist = PackObjList("padlist")
         self.color = None
+
+class MacroPinObj(ShapeObj):
+    def __init__(self,id,pos):
+            boundary = [ ( -1, -1) ,
+                         (  1, -1) ,
+                         (  1,  1) ,
+                         ( -1,  1)  ]
+            super().__init__(id, boundary)
+            self.pos = pos
+            
+        
         
 class PinObj(PackObj):
     

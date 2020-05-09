@@ -115,6 +115,7 @@ class macro_drawing(Flowable):
             p.lineTo(point[0],point[1])
         p.close()
         canvas.drawPath(p, fill=1)
+#        self.macro.draw(canvas)
 
 
 """
