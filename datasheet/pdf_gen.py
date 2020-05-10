@@ -252,6 +252,19 @@ class datasheet:
             doc_data.append(Paragraph("Macro: {}".format(macro.id),self.style['Heading3']))
             doc_data.append(Paragraph("Floorplan",self.style['Heading4']))
             doc_data.append(macro_drawing(macro))
+
+            doc_data.append(Spacer(20*cm,1*cm))
+
+            table_data = [("","Macro Information")]
+            table_data.append(("width_x",macro.width_x))
+            table_data.append(("width_y",macro.width_y))
+            table = Table(table_data)
+            table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
+                                       ('TEXTCOLOR',(0,0),(-1,-1),colors.black),
+                                       ('INNERGRID',(0,0),(-1,-1),0.25,colors.black),
+                                       ('BOX',(0,0),(-1,0),1,colors.black),
+                                       ('BOX',(0,0),(-1,-1),1,colors.black)]))
+            doc_data.append(table)
             doc_data.append(PageBreak())
         
         return(doc_data)
