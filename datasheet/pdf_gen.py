@@ -52,7 +52,7 @@ class pinout_drawing(Flowable):
         for y in range(self.package.nb_y):
             canvas.drawCentredString( -0.5*cm, (y+0.5)*cm-4, chr(65+y))
 
-        print("pinout drawing scale:",self.scale)
+#        print("pinout drawing scale:",self.scale)
 
 """
 draw the floorplan
@@ -95,15 +95,24 @@ class macro_drawing(Flowable):
     def __init__(self, macro, fillcolor=white, strokecolor=black):
         self.fillcolor, self.strokecolor = fillcolor, strokecolor
         self.macro = macro
-        self.macro.width = 200
-        self.macro.height = 200
+        self.width = 14*cm
+        self.height = 10*cm
+
+        if self.macro.width_y > self.macro.width_x:
+            self.scale = (10*cm) / (self.macro.width_y*cm)
+        else:
+            self.scale = (10*cm) / (self.macro.width_x*cm)
+            self.height = self.scale * (self.macro.width_y*cm)
+
     def wrap(self, *args):
-        return (self.macro.width, self.macro.height)
+        return (self.width, self.height)
     def draw(self):
         canvas = self.canv
         canvas.setStrokeColor(self.strokecolor)
         canvas.setFillColor(self.fillcolor)
-        canvas.scale(0.05,0.05)
+            
+        canvas.scale(self.scale,self.scale)
+        print("self.height:",self.height, self.macro.width_y, self.macro.width_y*cm)
         
         self.macro.draw(canvas)
 
@@ -243,6 +252,7 @@ class datasheet:
             doc_data.append(Paragraph("Macro: {}".format(macro.id),self.style['Heading3']))
             doc_data.append(Paragraph("Floorplan",self.style['Heading4']))
             doc_data.append(macro_drawing(macro))
+            doc_data.append(PageBreak())
         
         return(doc_data)
 

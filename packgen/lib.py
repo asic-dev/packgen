@@ -94,6 +94,27 @@ class ShapeObj(PackObj):
     def __init__(self, identifier, boundary):
         super().__init__(identifier)
         self.boundary = boundary
+        
+        min_x = max_x = boundary[0][0]
+        min_y = max_y = boundary[0][1]
+        for point in boundary:
+            if point[0]<min_x:
+                min_x = point[0]
+            if point[0]>max_x:
+                max_x = point[0]
+            if point[1]<min_y:
+                min_y = point[1]
+            if point[1]>max_y:
+                max_y = point[1]
+                
+        print("min:",min_x,min_y)
+        print("max:",max_x,max_y)
+        
+        self.width_x = max_x - min_x
+        self.width_y = max_y - min_y
+        
+        print("width:",self.width_x,self.width_y)
+            
 
     """
     draw shape boundary

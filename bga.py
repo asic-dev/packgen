@@ -76,6 +76,7 @@ mars.macrolist.add("BOX_SHAPE", [ (200,100) ] )
 
 mars.macrolist.add("GPIO_PAD_H", [( 50,150)] )
 mars.macrolist.add("GPIO_PAD_V", [(150,50 )] )
+mars.macrolist.add("TEST_PAD", [(50,300)] )
 
 mars.instlist.add("L_SHAPE_I1","L_SHAPE",( 500,700))
 mars.instlist.add("L_SHAPE_I2","L_SHAPE",( 700,700))
@@ -86,6 +87,7 @@ mars.instlist.add("B_SHAPE_I1","BOX_SHAPE",(200,1000))
 
 mars.padlist.add("MISO_inst","GPIO_PAD_H",1000,1000)
 mars.padlist.add("MOSI_inst","GPIO_PAD_H",2000,2000)
+mars.padlist.add("test_inst","TEST_PAD",2100,2000)
 
 print("LSHAPE:",lshape)
 lshape.add_pin("input_ena",(10,10))
