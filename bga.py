@@ -72,7 +72,9 @@ lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
                                         (150,100) ,
                                         (  0,100)  ])
 
-mars.macrolist.add("BOX_SHAPE", [ (200,100) ] )
+box_shape = mars.macrolist.add("BOX_SHAPE", [ (200,100) ] )
+
+mem1 = mars.macrolist.add("MEM1", [ (30,20) ] )
 
 mars.macrolist.add("GPIO_PAD_H", [( 50,150)] )
 mars.macrolist.add("GPIO_PAD_V", [(150,50 )] )
@@ -89,9 +91,17 @@ mars.padlist.add("MISO_inst","GPIO_PAD_H",1000,1000)
 mars.padlist.add("MOSI_inst","GPIO_PAD_H",2000,2000)
 mars.padlist.add("test_inst","TEST_PAD",2100,2000)
 
-print("LSHAPE:",lshape)
 lshape.add_pin("input_ena",(10,10))
 lshape.add_pin("output_ena",(20,10))
+lshape.add_macro("mem_i0","MEM1",(40,40))
+lshape.add_macro("mem_i1","MEM1",(80,40))
+
+box_shape.add_pin("adc_out[0]",(10,10))
+box_shape.add_pin("adc_out[1]",(15,10))
+box_shape.add_pin("vdda",(10,90))
+box_shape.add_pin("gnda",(15,90))
+
+box_shape.add_macro("mem_i0","MEM1",(20,20))
 
 #=================
 # chip2 description

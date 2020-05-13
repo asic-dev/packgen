@@ -255,9 +255,14 @@ class datasheet:
 
             doc_data.append(Spacer(20*cm,1*cm))
 
-            table_data = [("","Macro Information")]
+            # parameter table
+            #################
+            doc_data.append(Paragraph("Parameters",self.style['Heading4']))
+            table_data = [("parameter","value")]
             table_data.append(("width_x",macro.width_x))
             table_data.append(("width_y",macro.width_y))
+            table_data.append(("number of pins",macro.plist.num_items()))
+            table_data.append(("number of macros",macro.mlist.num_items()))
             table = Table(table_data)
             table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
                                        ('TEXTCOLOR',(0,0),(-1,-1),colors.black),
@@ -265,6 +270,25 @@ class datasheet:
                                        ('BOX',(0,0),(-1,0),1,colors.black),
                                        ('BOX',(0,0),(-1,-1),1,colors.black)]))
             doc_data.append(table)
+            doc_data.append(Spacer(20*cm,1*cm))
+
+            # pin table
+            ###########
+            if macro.plist.num_items() > 0:
+                doc_data.append(Paragraph("Pins",self.style['Heading4']))
+                table_data = [("pin","type")]
+                for pin in macro.plist:
+                    table_data.append((pin.id,""))
+                table = Table(table_data)
+                table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
+                                           ('TEXTCOLOR',(0,0),(-1,-1),colors.black),
+                                           ('INNERGRID',(0,0),(-1,-1),0.25,colors.black),
+                                           ('BOX',(0,0),(-1,0),1,colors.black),
+                                           ('BOX',(0,0),(-1,-1),1,colors.black)]))
+                doc_data.append(table)
+                doc_data.append(Spacer(20*cm,1*cm))
+                
+            
             doc_data.append(PageBreak())
         
         return(doc_data)

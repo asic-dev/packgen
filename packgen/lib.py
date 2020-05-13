@@ -45,6 +45,9 @@ class PackObjList(PackObj):
         else:
             return(None)
 
+    def num_items(self):
+        return(len(self.__dict))
+
     """
     plot all objects of the list
     
@@ -182,13 +185,18 @@ class MacroObj(ShapeObj):
         self.parent = parent
             
         self.plist = PackObjList(self)
-        self.mlist = MacroListObj(self)
+        self.mlist = MacroInstListObj(self)
+        
+        self.macrolist = parent.macrolist
         
     def add_pin(self,id,pos=None):
         print("MacroObj.add_pin:",id)
         if pos is None:
             return()
         self.plist.add(MacroPinObj(id,pos))
+        
+    def add_macro(self,id,ref,pos):
+        self.mlist.add(id,ref,pos)
 
     def draw(self,canvas):
         super().draw(canvas)
@@ -196,6 +204,10 @@ class MacroObj(ShapeObj):
             canvas.translate(pin.pos[0]*cm, pin.pos[1]*cm)
             pin.draw(canvas)
             canvas.translate(-pin.pos[0]*cm, -pin.pos[1]*cm)
+        for macro in self.mlist:
+            canvas.translate(macro.pos[0]*cm, macro.pos[1]*cm)
+            macro.draw(canvas)
+            canvas.translate(-macro.pos[0]*cm, -macro.pos[1]*cm)
 
 class MacroInstObj(PackObj):
     """
