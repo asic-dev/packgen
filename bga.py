@@ -7,6 +7,7 @@ from packgen.lib import BGA
 
 from packgen.read_ballout import read_ballout
 from packgen.gen_pad_vlog import gen_pad_vlog
+from packgen.gen_liberty import gen_liberty
         
 
 #=============
@@ -127,3 +128,5 @@ from packgen.spec import SpecObj
 test_spec = SpecObj()
 
 gen_pad_vlog("test.v",mars.padlist)
+
+gen_liberty(box_shape)
