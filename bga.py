@@ -75,7 +75,14 @@ lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
 
 box_shape = mars.macrolist.add("BOX_SHAPE", [ (200,100) ] )
 
+# memory macro definition
+#========================
 mem1 = mars.macrolist.add("MEM1", [ (30,20) ] )
+rclk = mem1.add_pin("rclk", (10,10) )
+rclk.set_type ("clk_in")
+
+wclk = mem1.add_pin("wclk", (10,10) )
+wclk.set_type ("clk_in")
 
 mars.macrolist.add("GPIO_PAD_H", [( 50,150)] )
 mars.macrolist.add("GPIO_PAD_V", [(150,50 )] )

@@ -278,7 +278,7 @@ class datasheet:
                 doc_data.append(Paragraph("Pins",self.style['Heading4']))
                 table_data = [("pin","type")]
                 for pin in macro.plist:
-                    table_data.append((pin.id,""))
+                    table_data.append((pin.id,pin.get_type_str()))
                 table = Table(table_data)
                 table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
                                            ('TEXTCOLOR',(0,0),(-1,-1),colors.black),

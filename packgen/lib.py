@@ -193,7 +193,7 @@ class MacroObj(ShapeObj):
         print("MacroObj.add_pin:",id)
         if pos is None:
             return()
-        self.plist.add(MacroPinObj(id,pos))
+        return(self.plist.add(MacroPinObj(id,pos)))
         
     def add_macro(self,id,ref,pos):
         self.mlist.add(id,ref,pos)
@@ -279,6 +279,21 @@ class MacroPinObj(ShapeObj):
                          ( -1,  1)  ]
             super().__init__(id, boundary)
             self.pos = pos
+            self._type = "tbd"
+            self._type_str_dict = {
+                    "tbd"    : "tbd.",
+                    "clk_in" : "clock input",
+                    "sig_in" : "signal input"
+                } 
+    """
+    set type of the pin
+    possible types are: "clk_in", "sig_in", "sig_out", ...
+    """        
+    def set_type(self,type):
+        self._type = type
+        
+    def get_type_str(self):
+        return(self._type_str_dict[self._type])
             
         
         
