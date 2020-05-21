@@ -288,6 +288,22 @@ class datasheet:
                 doc_data.append(table)
                 doc_data.append(Spacer(20*cm,1*cm))
                 
+            # macro table
+            #############
+            if macro.mlist.num_items() > 0:
+                doc_data.append(Paragraph("Macros",self.style['Heading4']))
+                table_data = [("instance","macro")]
+                for macro_inst in macro.mlist:
+                    table_data.append((macro_inst.id,macro_inst.macro.id))
+                table = Table(table_data)
+                table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
+                                           ('TEXTCOLOR',(0,0),(-1,-1),colors.black),
+                                           ('INNERGRID',(0,0),(-1,-1),0.25,colors.black),
+                                           ('BOX',(0,0),(-1,0),1,colors.black),
+                                           ('BOX',(0,0),(-1,-1),1,colors.black)]))
+                doc_data.append(table)
+                doc_data.append(Spacer(20*cm,1*cm))
+                
             
             doc_data.append(PageBreak())
         
