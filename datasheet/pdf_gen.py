@@ -276,9 +276,12 @@ class datasheet:
             ###########
             if macro.plist.num_items() > 0:
                 doc_data.append(Paragraph("Pins",self.style['Heading4']))
-                table_data = [("pin","type")]
+                table_data = [("pin","type","x","y")]
                 for pin in macro.plist:
-                    table_data.append((pin.id,pin.get_type_str()))
+                    table_data.append((pin.id,
+                                       pin.get_type_str(),
+                                       pin.pos[0],
+                                       pin.pos[1]))
                 table = Table(table_data)
                 table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
                                            ('TEXTCOLOR',(0,0),(-1,-1),colors.black),
@@ -292,9 +295,12 @@ class datasheet:
             #############
             if macro.mlist.num_items() > 0:
                 doc_data.append(Paragraph("Macros",self.style['Heading4']))
-                table_data = [("instance","macro")]
+                table_data = [("instance","macro","x","y")]
                 for macro_inst in macro.mlist:
-                    table_data.append((macro_inst.id,macro_inst.macro.id))
+                    table_data.append((macro_inst.id,
+                                       macro_inst.macro.id,
+                                       macro_inst.pos[0],
+                                       macro_inst.pos[1]))
                 table = Table(table_data)
                 table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),colors.white),
                                            ('TEXTCOLOR',(0,0),(-1,-1),colors.black),
