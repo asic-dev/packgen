@@ -106,8 +106,10 @@ lshape.add_macro("mem_i1","MEM1",(80,40))
 
 box_shape.add_pin("adc_out[0]",(10,10))
 box_shape.add_pin("adc_out[1]",(15,10))
-box_shape.add_pin("vdda",(10,90))
-box_shape.add_pin("gnda",(15,90))
+vdda=box_shape.add_pin("vdda",(10,90))
+vdda.set_type("supply")
+gnda=box_shape.add_pin("gnda",(15,90))
+gnda.set_type("ground")
 
 box_shape.add_macro("mem_i0","MEM1",(20,20))
 

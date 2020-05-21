@@ -283,7 +283,9 @@ class MacroPinObj(ShapeObj):
             self._type_str_dict = {
                     "tbd"    : "tbd.",
                     "clk_in" : "clock input",
-                    "sig_in" : "signal input"
+                    "sig_in" : "signal input",
+                    "supply" : "supply",
+                    "ground" : "ground"
                 } 
     """
     set type of the pin
@@ -294,6 +296,12 @@ class MacroPinObj(ShapeObj):
         
     def get_type_str(self):
         return(self._type_str_dict[self._type])
+    
+    def is_pg_pin(self):
+        if self._type == "supply" or self._type == "ground":
+            return(True)
+        else:
+            return(False)
             
         
         
