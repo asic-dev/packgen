@@ -281,18 +281,23 @@ class MacroPinObj(ShapeObj):
             self.pos = pos
             self._type = "tbd"
             self._type_str_dict = {
-                    "tbd"    : "tbd.",
-                    "clk_in" : "clock input",
-                    "sig_in" : "signal input",
-                    "supply" : "supply",
-                    "ground" : "ground"
+                    "tbd"     : "tbd.",
+                    "clk_in"  : "clock input",
+                    "sig_in"  : "signal input",
+                    "sig_out" : "signal output",
+                    "supply"  : "supply",
+                    "ground"  : "ground"
                 } 
+            self._related_ground = "tbd"
     """
     set type of the pin
     possible types are: "clk_in", "sig_in", "sig_out", ...
     """        
     def set_type(self,type):
         self._type = type
+        
+    def set_related_ground(self,ground_pin):
+        self._related_ground = ground_pin
         
     def get_type_str(self):
         return(self._type_str_dict[self._type])

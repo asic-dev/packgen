@@ -104,12 +104,15 @@ lshape.add_pin("output_ena",(20,10))
 lshape.add_macro("mem_i0","MEM1",(40,40))
 lshape.add_macro("mem_i1","MEM1",(80,40))
 
-box_shape.add_pin("adc_out[0]",(10,10))
-box_shape.add_pin("adc_out[1]",(15,10))
 vdda=box_shape.add_pin("vdda",(10,90))
 vdda.set_type("supply")
 gnda=box_shape.add_pin("gnda",(15,90))
 gnda.set_type("ground")
+
+box_shape.add_pin("adc_out[0]",(10,10))
+adc_out1=box_shape.add_pin("adc_out[1]",(15,10))
+adc_out1.set_type("sig_out")
+adc_out1.set_related_ground("gnda")
 
 box_shape.add_macro("mem_i0","MEM1",(20,20))
 
