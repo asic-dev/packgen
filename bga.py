@@ -6,6 +6,7 @@ from datasheet.pdf_gen import datasheet
 from packgen.lib import BGA
 
 from packgen.read_ballout import read_ballout
+from packgen.read_macros import read_macros
 from packgen.gen_pad_vlog import gen_pad_vlog
 from packgen.gen_liberty import gen_liberty
         
@@ -31,6 +32,8 @@ for ball in ball_out:
     print("ball:",ball)
     my_package.pinlist.get(ball).connect(ball_out[ball])
 
+# create a dictionary of the macros from an Excel table
+macros = read_macros("spec/macros.xlsx")
 
 #=========================================
 # package to chip connectivity description

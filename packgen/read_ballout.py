@@ -1,5 +1,4 @@
 from xlrd import open_workbook
-from _ast import Or
 
 def get_weight(table,x,y,type):
     if type == "xup":
