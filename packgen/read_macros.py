@@ -15,6 +15,8 @@ def extract_pin_table_header(sheet):
         pin_col     = None
         type_col    = None
         rel_gnd_col = None
+        xpos_col    = None
+        ypos_col    = None
         
         for mt_col in range(0,max_cell_index):
             
@@ -28,6 +30,10 @@ def extract_pin_table_header(sheet):
                     type_col = mt_col
                 elif val == "related ground":
                     rel_gnd_col = mt_col
+                elif val == "x":
+                    xpos_col = mt_col
+                elif val == "y":
+                    ypos_col = mt_col
                     
             except:
                 break
@@ -38,7 +44,9 @@ def extract_pin_table_header(sheet):
                 header_dict = { "header_row"  : mt_row,
                                 "pin_col"     : pin_col,
                                 "type_col"    : type_col,
-                                "rel_gnd_col" : rel_gnd_col
+                                "rel_gnd_col" : rel_gnd_col,
+                                "xpos_col"    : xpos_col,
+                                "ypos_col"    : ypos_col
                               }
              
     return(header_dict)
@@ -55,11 +63,15 @@ def extract_pin_spec(sheet,header_dict):
             pin_name    = sheet.cell_value(mt_row,header_dict["pin_col"])
             pin_type    = sheet.cell_value(mt_row,header_dict["type_col"])
             pin_rel_gnd = sheet.cell_value(mt_row,header_dict["rel_gnd_col"])
+            pin_xpos    = sheet.cell_value(mt_row,header_dict["xpos_col"])
+            pin_ypos    = sheet.cell_value(mt_row,header_dict["ypos_col"])
             
             # if cell is not empty add pin to pin dictionary
             if len(pin_name)>0:
                 pin_dict[pin_name] = {"type"    : pin_type,
-                                      "rel_gnd" : pin_rel_gnd}
+                                      "rel_gnd" : pin_rel_gnd,
+                                      "xpos"    : pin_xpos,
+                                      "ypos"    : pin_ypos}
                 
         except:
             None
@@ -90,3 +102,4 @@ def read_macros(spec_file):
             macros.update(extract_macro_spec_sheet(sheet))
             
     print("Macros:",macros)
+    return(macros)

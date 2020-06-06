@@ -32,8 +32,6 @@ for ball in ball_out:
     print("ball:",ball)
     my_package.pinlist.get(ball).connect(ball_out[ball])
 
-# create a dictionary of the macros from an Excel table
-macros = read_macros("spec/macros.xlsx")
 
 #=========================================
 # package to chip connectivity description
@@ -69,6 +67,19 @@ mars = my_package.chiplist.add( CHIP_TOP,
                                 CHIP_XDIM,
                                 CHIP_YDIM )
 
+# create a dictionary of the macros from an Excel table
+macros = read_macros("spec/macros.xlsx")
+for macro_spec in macros:
+    print("Macro:",macro_spec)
+    macro = mars.macrolist.add(macro_spec,[(100,100)])
+    spec = macros[macro_spec]
+    
+    for pin in spec["pin_spec"]:
+        pos_x = spec["pin_spec"][pin]["xpos"]
+        pos_y = spec["pin_spec"][pin]["ypos"]
+        macro.add_pin(pin,(pos_x,pos_y))
+    
+    
 lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
                                         (200,  0) ,
                                         (200,150) ,
@@ -80,7 +91,7 @@ box_shape = mars.macrolist.add("BOX_SHAPE", [ (200,100) ] )
 
 # memory macro definition
 #========================
-mem1 = mars.macrolist.add("MEM1", [ (30,20) ] )
+mem1 = mars.macrolist.add("MEM2", [ (30,20) ] )
 rclk = mem1.add_pin("rclk", (10,10) )
 rclk.set_type ("clk_in")
 
@@ -104,8 +115,8 @@ mars.padlist.add("test_inst","TEST_PAD",2100,2000)
 
 lshape.add_pin("input_ena",(10,10))
 lshape.add_pin("output_ena",(20,10))
-lshape.add_macro("mem_i0","MEM1",(40,40))
-lshape.add_macro("mem_i1","MEM1",(80,40))
+lshape.add_macro("mem_i0","MEM2",(40,40))
+lshape.add_macro("mem_i1","MEM2",(80,40))
 
 vdda=box_shape.add_pin("vdda",(10,90))
 vdda.set_type("supply")
@@ -117,7 +128,7 @@ adc_out1=box_shape.add_pin("adc_out[1]",(15,10))
 adc_out1.set_type("sig_out")
 adc_out1.set_related_ground("gnda")
 
-box_shape.add_macro("mem_i0","MEM1",(20,20))
+box_shape.add_macro("mem_i0","MEM2",(20,20))
 
 #=================
 # chip2 description
