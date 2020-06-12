@@ -159,8 +159,18 @@ class MacroListObj(PackObjList):
         super().__init__("{}.macro_list".format(parent.id))
         self.parent = parent
 
-    def add(self,id,boundary):
-        return(super().add(MacroObj(self.parent,id,boundary)))
+    def add(self,id,boundary,spec = None):
+        macro = MacroObj(self.parent,id,boundary)
+
+        if spec is not None:
+            for pin in spec["pin_spec"]:
+                pos_x = spec["pin_spec"][pin]["xpos"]
+                pos_y = spec["pin_spec"][pin]["ypos"]
+                p = macro.add_pin(pin,(pos_x,pos_y))
+                p.set_type(spec["pin_spec"][pin]["type"])
+        
+        return(super().add(macro))
+    
         
 class MacroObj(ShapeObj):
     """

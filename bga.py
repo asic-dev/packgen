@@ -70,14 +70,7 @@ mars = my_package.chiplist.add( CHIP_TOP,
 # create a dictionary of the macros from an Excel table
 macros = read_macros("spec/macros.xlsx")
 for macro_spec in macros:
-    print("Macro:",macro_spec)
-    macro = mars.macrolist.add(macro_spec,[(100,100)])
-    spec = macros[macro_spec]
-    
-    for pin in spec["pin_spec"]:
-        pos_x = spec["pin_spec"][pin]["xpos"]
-        pos_y = spec["pin_spec"][pin]["ypos"]
-        macro.add_pin(pin,(pos_x,pos_y))
+    mars.macrolist.add(macro_spec,[(100,100)],macros[macro_spec])
     
     
 lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
@@ -113,7 +106,9 @@ mars.padlist.add("MISO_inst","GPIO_PAD_H",1000,1000)
 mars.padlist.add("MOSI_inst","GPIO_PAD_H",2000,2000)
 mars.padlist.add("test_inst","TEST_PAD",2100,2000)
 
-lshape.add_pin("input_ena",(10,10))
+input_ena = lshape.add_pin("input_ena",(10,10))
+input_ena.set_type("sig_in")
+
 lshape.add_pin("output_ena",(20,10))
 lshape.add_macro("mem_i0","MEM2",(40,40))
 lshape.add_macro("mem_i1","MEM2",(80,40))
