@@ -295,6 +295,8 @@ class MacroPinObj(ShapeObj):
                     "clk_in"  : "clock input",
                     "sig_in"  : "signal input",
                     "sig_out" : "signal output",
+                    "ana_in"  : "analog signal input",
+                    "ana_out" : "analog signal output",
                     "supply"  : "supply",
                     "ground"  : "ground"
                 } 

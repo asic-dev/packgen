@@ -80,7 +80,7 @@ lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
                                         (150,100) ,
                                         (  0,100)  ])
 
-box_shape = mars.macrolist.add("BOX_SHAPE", [ (200,100) ] )
+box_shape = mars.macrolist.add("BOX_SHAPE", [ (300,400) ] )
 
 # memory macro definition
 #========================
@@ -124,6 +124,7 @@ adc_out1.set_type("sig_out")
 adc_out1.set_related_ground("gnda")
 
 box_shape.add_macro("mem_i0","MEM2",(20,20))
+box_shape.add_macro("adc_i0","ADC_100MS",(150,20))
 
 #=================
 # chip2 description
