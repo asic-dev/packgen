@@ -168,6 +168,8 @@ class MacroListObj(PackObjList):
                 pos_y = spec["pin_spec"][pin]["ypos"]
                 p = macro.add_pin(pin,(pos_x,pos_y))
                 p.set_type(spec["pin_spec"][pin]["type"])
+                p.set_related_ground(spec["pin_spec"][pin]["rel_gnd"])
+                p.set_related_supply(spec["pin_spec"][pin]["rel_supply"])
         
         return(super().add(macro))
     
@@ -301,6 +303,7 @@ class MacroPinObj(ShapeObj):
                     "ground"  : "ground"
                 } 
             self._related_ground = "tbd"
+            self._related_supply = "tbd"
     """
     set type of the pin
     possible types are: "clk_in", "sig_in", "sig_out", ...
@@ -311,8 +314,17 @@ class MacroPinObj(ShapeObj):
     def set_related_ground(self,ground_pin):
         self._related_ground = ground_pin
         
+    def set_related_supply(self,supply_pin):
+        self._related_supply = supply_pin
+        
     def get_type_str(self):
         return(self._type_str_dict[self._type])
+    
+    def get_rel_gnd_str(self):
+        return(self._related_ground)
+    
+    def get_rel_sup_str(self):
+        return(self._related_supply)
     
     def is_pg_pin(self):
         if self._type == "supply" or self._type == "ground":

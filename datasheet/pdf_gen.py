@@ -276,10 +276,12 @@ class datasheet:
             ###########
             if macro.plist.num_items() > 0:
                 doc_data.append(Paragraph("Pins",self.style['Heading4']))
-                table_data = [("pin","type","x","y")]
+                table_data = [("pin","type","related\nground","related\nsupply","x","y")]
                 for pin in macro.plist:
                     table_data.append((pin.id,
                                        pin.get_type_str(),
+                                       pin.get_rel_gnd_str(),
+                                       pin.get_rel_sup_str(),
                                        pin.pos[0],
                                        pin.pos[1]))
                 table = Table(table_data)

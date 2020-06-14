@@ -70,7 +70,7 @@ mars = my_package.chiplist.add( CHIP_TOP,
 # create a dictionary of the macros from an Excel table
 macros = read_macros("spec/macros.xlsx")
 for macro_spec in macros:
-    mars.macrolist.add(macro_spec,[(100,100)],macros[macro_spec])
+    mars.macrolist.add(macro_spec,[(100,100)],spec = macros[macro_spec])
     
     
 lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,

@@ -30,6 +30,8 @@ def extract_pin_table_header(sheet):
                     type_col = mt_col
                 elif val == "related ground":
                     rel_gnd_col = mt_col
+                elif val == "related supply":
+                    rel_supply_col = mt_col
                 elif val == "x":
                     xpos_col = mt_col
                 elif val == "y":
@@ -41,12 +43,13 @@ def extract_pin_table_header(sheet):
         if (pin_col is not None) and (type_col is not None):
             
             if header_dict is None:
-                header_dict = { "header_row"  : mt_row,
-                                "pin_col"     : pin_col,
-                                "type_col"    : type_col,
-                                "rel_gnd_col" : rel_gnd_col,
-                                "xpos_col"    : xpos_col,
-                                "ypos_col"    : ypos_col
+                header_dict = { "header_row"     : mt_row,
+                                "pin_col"        : pin_col,
+                                "type_col"       : type_col,
+                                "rel_gnd_col"    : rel_gnd_col,
+                                "rel_supply_col" : rel_supply_col, 
+                                "xpos_col"       : xpos_col,
+                                "ypos_col"       : ypos_col
                               }
              
     return(header_dict)
@@ -60,18 +63,20 @@ def extract_pin_spec(sheet,header_dict):
     for mt_row in range(header_dict["header_row"]+1,max_cell_index):
         
         try:
-            pin_name    = sheet.cell_value(mt_row,header_dict["pin_col"])
-            pin_type    = sheet.cell_value(mt_row,header_dict["type_col"])
-            pin_rel_gnd = sheet.cell_value(mt_row,header_dict["rel_gnd_col"])
-            pin_xpos    = sheet.cell_value(mt_row,header_dict["xpos_col"])
-            pin_ypos    = sheet.cell_value(mt_row,header_dict["ypos_col"])
+            pin_name       = sheet.cell_value(mt_row,header_dict["pin_col"])
+            pin_type       = sheet.cell_value(mt_row,header_dict["type_col"])
+            pin_rel_gnd    = sheet.cell_value(mt_row,header_dict["rel_gnd_col"])
+            pin_rel_supply = sheet.cell_value(mt_row,header_dict["rel_supply_col"])
+            pin_xpos       = sheet.cell_value(mt_row,header_dict["xpos_col"])
+            pin_ypos       = sheet.cell_value(mt_row,header_dict["ypos_col"])
             
             # if cell is not empty add pin to pin dictionary
             if len(pin_name)>0:
-                pin_dict[pin_name] = {"type"    : pin_type,
-                                      "rel_gnd" : pin_rel_gnd,
-                                      "xpos"    : pin_xpos,
-                                      "ypos"    : pin_ypos}
+                pin_dict[pin_name] = {"type"       : pin_type,
+                                      "rel_gnd"    : pin_rel_gnd,
+                                      "rel_supply" : pin_rel_supply,
+                                      "xpos"       : pin_xpos,
+                                      "ypos"       : pin_ypos}
                 
         except:
             None
