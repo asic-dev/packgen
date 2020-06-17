@@ -12,11 +12,12 @@ def extract_pin_table_header(sheet):
     header_dict = None
 
     for mt_row in range(0,max_cell_index):
-        pin_col     = None
-        type_col    = None
-        rel_gnd_col = None
-        xpos_col    = None
-        ypos_col    = None
+        pin_col        = None
+        type_col       = None
+        rel_gnd_col    = None
+        rel_supply_col = None
+        xpos_col       = None
+        ypos_col       = None
         
         for mt_col in range(0,max_cell_index):
             
@@ -54,13 +55,60 @@ def extract_pin_table_header(sheet):
              
     return(header_dict)
 
-def extract_pin_spec(sheet,header_dict):
+def extract_macro_table_header(sheet):
+    """
+    extract the macro table header by searching for a line in the Excel sheet that
+    contains the words "macro", "instance", "x", "y"
+    """
+    print("extract macro table header")
+    
+    max_cell_index = 100
+    
+    header_dict = None
+
+    for mt_row in range(0,max_cell_index):
+        macro_col = None
+        inst_col  = None
+        xpos_col  = None
+        ypos_col  = None
+        
+        for mt_col in range(0,max_cell_index):
+            
+            try:
+                
+                val = sheet.cell_value(mt_row,mt_col)
+                
+                if val == "macro":
+                    macro_col = mt_col
+                elif val == "instance":
+                    inst_col = mt_col
+                elif val == "x":
+                    xpos_col = mt_col
+                elif val == "y":
+                    ypos_col = mt_col
+                    
+            except:
+                break
+            
+        if (macro_col is not None) and (inst_col is not None):
+            
+            if header_dict is None:
+                header_dict = { "header_row"     : mt_row,
+                                "macro_col"      : macro_col,
+                                "inst_col"       : inst_col,
+                                "xpos_col"       : xpos_col,
+                                "ypos_col"       : ypos_col
+                              }
+             
+    return(header_dict)
+
+def extract_pin_spec(sheet,header_dict,num_pin_rows):
 
     max_cell_index = 100
     
     pin_dict = {}
     
-    for mt_row in range(header_dict["header_row"]+1,max_cell_index):
+    for mt_row in range(header_dict["header_row"]+1,header_dict["header_row"]+num_pin_rows):
         
         try:
             pin_name       = sheet.cell_value(mt_row,header_dict["pin_col"])
@@ -83,17 +131,70 @@ def extract_pin_spec(sheet,header_dict):
             
     return(pin_dict)
 
+def extract_macro_spec(sheet,header_dict,num_macro_rows):
+
+    macro_dict = {}
+    
+    for mt_row in range(header_dict["header_row"]+1,header_dict["header_row"]+num_macro_rows):
+        
+        try:
+            macro_name   = sheet.cell_value(mt_row,header_dict["macro_col"])
+            macro_inst   = sheet.cell_value(mt_row,header_dict["inst_col"])
+            macro_xpos   = sheet.cell_value(mt_row,header_dict["xpos_col"])
+            macro_ypos   = sheet.cell_value(mt_row,header_dict["ypos_col"])
+            
+            # if cell is not empty add instance to macro dictionary
+            if len(macro_inst)>0:
+                macro_dict[macro_inst] = { "macro"    : macro_name,
+                                           "xpos"     : macro_xpos,
+                                           "ypos"     : macro_ypos}
+                
+        except:
+            None
+            
+    return(macro_dict)
+
+
+
 def extract_macro_spec_sheet(sheet):
+    
+    max_cell_index = 100
+    
+    pin_dict = None
+    macro_dict = None
+    
     print("extract macro specification for ",sheet.name)
     
-    header_dict = extract_pin_table_header(sheet)
+    pin_header_dict   = extract_pin_table_header(sheet)
     
-    pin_dict = extract_pin_spec(sheet,header_dict)
+    try:
+        macro_header_dict = extract_macro_table_header(sheet)
     
-#    print("pin table header:",header_dict)
-#    print("pin table:",pin_dict)
+        if macro_header_dict["header_row"] > pin_header_dict["header_row"]:
+            num_pin_rows = macro_header_dict["header_row"] - pin_header_dict["header_row"]
+            num_macro_rows = max_cell_index
+        else:
+            num_pin_rows = max_cell_index
+            num_macro_rows = pin_header_dict["header_row"] - macro_header_dict["header_row"]
+            
+        macro_dict = extract_macro_spec(sheet,macro_header_dict,num_macro_rows)
+        
+        print("macro table header:",macro_header_dict)
+        print("num macro rows:",num_macro_rows)
+        print("macro table:",macro_dict)
+        
+#        macro_spec[sheet.name]["macro_spec"] = macro_dict
+    except:
+        num_pin_rows = max_cell_index
+        
+    pin_dict = extract_pin_spec(sheet,pin_header_dict,num_pin_rows)
     
-    macro_spec = { sheet.name : {"pin_spec" : pin_dict} }
+    print("pin table header:",pin_header_dict)
+    print("num pin rows:",num_pin_rows)
+    print("pin table:",pin_dict)
+    
+    macro_spec = { sheet.name : {"pin_spec"   : pin_dict,
+                                 "macro_spec" : macro_dict} }
     return(macro_spec)
 
 def read_macros(spec_file):

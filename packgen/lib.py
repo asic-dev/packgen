@@ -170,6 +170,15 @@ class MacroListObj(PackObjList):
                 p.set_type(spec["pin_spec"][pin]["type"])
                 p.set_related_ground(spec["pin_spec"][pin]["rel_gnd"])
                 p.set_related_supply(spec["pin_spec"][pin]["rel_supply"])
+                
+            try:
+                for macro_inst in spec["macro_spec"]:
+                    pos_x = spec["macro_spec"][macro_inst]["xpos"]
+                    pos_y = spec["macro_spec"][macro_inst]["ypos"]
+                    macro.add_macro(macro_inst,spec["macro_spec"][macro_inst]["macro"],(pos_x,pos_y))
+            except:
+                None
+                
         
         return(super().add(macro))
     
