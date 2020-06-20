@@ -53,53 +53,6 @@ def extract_table_header(sheet,label_dict):
 #    print("header_dict:",header_dict)
     return(header_dict)
 
-def extract_macro_table_header(sheet):
-    """
-    extract the macro table header by searching for a line in the Excel sheet that
-    contains the words "macro", "instance", "x", "y"
-    """
-    print("extract macro table header")
-    
-    max_cell_index = 100
-    
-    header_dict = None
-
-    for mt_row in range(0,max_cell_index):
-        macro_col = None
-        inst_col  = None
-        xpos_col  = None
-        ypos_col  = None
-        
-        for mt_col in range(0,max_cell_index):
-            
-            try:
-                
-                val = sheet.cell_value(mt_row,mt_col)
-                
-                if val == "macro":
-                    macro_col = mt_col
-                elif val == "instance":
-                    inst_col = mt_col
-                elif val == "x":
-                    xpos_col = mt_col
-                elif val == "y":
-                    ypos_col = mt_col
-                    
-            except:
-                break
-            
-        if (macro_col is not None) and (inst_col is not None):
-            
-            if header_dict is None:
-                header_dict = { "header_row"     : mt_row,
-                                "macro_col"      : macro_col,
-                                "inst_col"       : inst_col,
-                                "xpos_col"       : xpos_col,
-                                "ypos_col"       : ypos_col
-                              }
-             
-    return(header_dict)
-
 def extract_pin_spec(sheet,header_dict,num_pin_rows):
 
     max_cell_index = 100
@@ -182,7 +135,11 @@ def extract_macro_spec_sheet(sheet):
     pin_header_dict = extract_table_header(sheet,label_dict)
     
     try:
-        macro_header_dict = extract_macro_table_header(sheet)
+        label_dict = {"macro"          : "macro_col",
+                      "instance"       : "inst_col",
+                      "x"              : "xpos_col",
+                      "y"              : "ypos_col"}
+        macro_header_dict = extract_table_header(sheet,label_dict)
     
         if macro_header_dict["header_row"] > pin_header_dict["header_row"]:
             num_pin_rows = macro_header_dict["header_row"] - pin_header_dict["header_row"]
