@@ -1,58 +1,56 @@
 from xlrd import open_workbook
 
-def extract_pin_table_header(sheet):
+def extract_table_header(sheet,label_dict):
     """
-    extract the pin table header by searching for a line in the Excel sheet that
-    contains the words "pin", "type, "related ground", "related supply"
+    extract a table header by searching for a row or
+    a column in the Excel sheet that
+    contains the words of the label dictionary
     """
-    print("extract pin table header")
-    
-    max_cell_index = 100
-    
     header_dict = None
 
-    for mt_row in range(0,max_cell_index):
-        pin_col        = None
-        type_col       = None
-        rel_gnd_col    = None
-        rel_supply_col = None
-        xpos_col       = None
-        ypos_col       = None
+    max_cell_index = 100
+    max_idx    = None
+    max_weight = 0
+    
+    for idx0 in range(0,max_cell_index):
         
-        for mt_col in range(0,max_cell_index):
-            
+        # reset weight computation for each row/column scan
+        row_weight = 0
+        row_header_dict = {}
+        col_weight = 0
+        col_header_dict = {}
+        
+        for idx1 in range(0,max_cell_index):
+           
             try:
-                
-                val = sheet.cell_value(mt_row,mt_col)
-                
-                if val == "pin":
-                    pin_col = mt_col
-                elif val == "type":
-                    type_col = mt_col
-                elif val == "related ground":
-                    rel_gnd_col = mt_col
-                elif val == "related supply":
-                    rel_supply_col = mt_col
-                elif val == "x":
-                    xpos_col = mt_col
-                elif val == "y":
-                    ypos_col = mt_col
-                    
+                val = sheet.cell_value(idx0,idx1)
+                if val in label_dict:
+                    row_weight = row_weight + 1
+                    row_header_dict.update({label_dict[val] : idx1})
             except:
-                break
-            
-        if (pin_col is not None) and (type_col is not None):
-            
-            if header_dict is None:
-                header_dict = { "header_row"     : mt_row,
-                                "pin_col"        : pin_col,
-                                "type_col"       : type_col,
-                                "rel_gnd_col"    : rel_gnd_col,
-                                "rel_supply_col" : rel_supply_col, 
-                                "xpos_col"       : xpos_col,
-                                "ypos_col"       : ypos_col
-                              }
-             
+                None
+        
+            try:
+                val = sheet.cell_value(idx1,idx0)
+                if val in label_dict:
+                    col_weight = col_weight + 1
+                    col_header_dict.update({label_dict[val] : idx1})
+            except:
+                None
+        
+        # update max values when new row was found that matches the label_dict better         
+        if row_weight > max_weight:
+            max_weight = row_weight
+            header_dict = row_header_dict
+            header_dict.update({"header_row":idx0})
+
+        # update max values when new column was found that matches the label_dict better         
+        if col_weight > max_weight:
+            max_weight = col_weight
+            header_dict = col_header_dict
+            header_dict.update({"header_col":idx0})
+    
+#    print("header_dict:",header_dict)
     return(header_dict)
 
 def extract_macro_table_header(sheet):
@@ -165,7 +163,23 @@ def extract_macro_spec_sheet(sheet):
     
     print("extract macro specification for ",sheet.name)
     
-    pin_header_dict   = extract_pin_table_header(sheet)
+    # extract header dictionary with row/column index (_rcidx) for the macro parameters
+    label_dict = {"width"      : "width_rcidx",
+                  "height"     : "height_rcidx",
+                  "macro type" : "mtype_rcidx",
+                  "LEF"        : "lef_rcidx",
+                  "LIB"        : "lib_rcidx"}
+    param_header_dict = extract_table_header(sheet,label_dict)
+    
+    print("parameter header:",param_header_dict)
+
+    label_dict = {"pin"            : "pin_col",
+                  "type"           : "type_col",
+                  "related ground" : "rel_gnd_col",
+                  "related supply" : "rel_supply_col",
+                  "x"              : "xpos_col",
+                  "y"              : "ypos_col"}
+    pin_header_dict = extract_table_header(sheet,label_dict)
     
     try:
         macro_header_dict = extract_macro_table_header(sheet)
