@@ -26,7 +26,7 @@ def extract_table_header(sheet,label_dict):
                 val = sheet.cell_value(idx0,idx1)
                 if val in label_dict:
                     row_weight = row_weight + 1
-                    row_header_dict.update({label_dict[val] : idx1})
+                    row_header_dict.update({label_dict[val]+"_rcidx" : idx1})
             except:
                 None
         
@@ -34,7 +34,7 @@ def extract_table_header(sheet,label_dict):
                 val = sheet.cell_value(idx1,idx0)
                 if val in label_dict:
                     col_weight = col_weight + 1
-                    col_header_dict.update({label_dict[val] : idx1})
+                    col_header_dict.update({label_dict[val]+"_rcidx" : idx1})
             except:
                 None
         
@@ -53,6 +53,25 @@ def extract_table_header(sheet,label_dict):
 #    print("header_dict:",header_dict)
     return(header_dict)
 
+def extract_table(sheet,header_dict):
+
+    print ("extract table:",header_dict)
+    
+    table_dict = {}
+    
+    try:
+        if "header_col" in header_dict:
+            
+            for col in range(header_dict["header_col"]+1,header_dict["header_col"]+2):
+                for item in header_dict:
+                    if item is not "header_col":
+                        val = sheet.cell_value(header_dict[item],col)
+                        table_dict.update({item.replace("_rcidx","") : val})
+    except:
+        None
+    
+    return(table_dict)
+
 def extract_pin_spec(sheet,header_dict,num_pin_rows):
 
     max_cell_index = 100
@@ -62,12 +81,12 @@ def extract_pin_spec(sheet,header_dict,num_pin_rows):
     for mt_row in range(header_dict["header_row"]+1,header_dict["header_row"]+num_pin_rows):
         
         try:
-            pin_name       = sheet.cell_value(mt_row,header_dict["pin_col"])
-            pin_type       = sheet.cell_value(mt_row,header_dict["type_col"])
-            pin_rel_gnd    = sheet.cell_value(mt_row,header_dict["rel_gnd_col"])
-            pin_rel_supply = sheet.cell_value(mt_row,header_dict["rel_supply_col"])
-            pin_xpos       = sheet.cell_value(mt_row,header_dict["xpos_col"])
-            pin_ypos       = sheet.cell_value(mt_row,header_dict["ypos_col"])
+            pin_name       = sheet.cell_value(mt_row,header_dict["pin_rcidx"])
+            pin_type       = sheet.cell_value(mt_row,header_dict["type_rcidx"])
+            pin_rel_gnd    = sheet.cell_value(mt_row,header_dict["rel_gnd_rcidx"])
+            pin_rel_supply = sheet.cell_value(mt_row,header_dict["rel_supply_rcidx"])
+            pin_xpos       = sheet.cell_value(mt_row,header_dict["xpos_rcidx"])
+            pin_ypos       = sheet.cell_value(mt_row,header_dict["ypos_rcidx"])
             
             # if cell is not empty add pin to pin dictionary
             if len(pin_name)>0:
@@ -89,10 +108,10 @@ def extract_macro_spec(sheet,header_dict,num_macro_rows):
     for mt_row in range(header_dict["header_row"]+1,header_dict["header_row"]+num_macro_rows):
         
         try:
-            macro_name   = sheet.cell_value(mt_row,header_dict["macro_col"])
-            macro_inst   = sheet.cell_value(mt_row,header_dict["inst_col"])
-            macro_xpos   = sheet.cell_value(mt_row,header_dict["xpos_col"])
-            macro_ypos   = sheet.cell_value(mt_row,header_dict["ypos_col"])
+            macro_name   = sheet.cell_value(mt_row,header_dict["macro_rcidx"])
+            macro_inst   = sheet.cell_value(mt_row,header_dict["inst_rcidx"])
+            macro_xpos   = sheet.cell_value(mt_row,header_dict["xpos_rcidx"])
+            macro_ypos   = sheet.cell_value(mt_row,header_dict["ypos_rcidx"])
             
             # if cell is not empty add instance to macro dictionary
             if len(macro_inst)>0:
@@ -117,28 +136,30 @@ def extract_macro_spec_sheet(sheet):
     print("extract macro specification for ",sheet.name)
     
     # extract header dictionary with row/column index (_rcidx) for the macro parameters
-    label_dict = {"width"      : "width_rcidx",
-                  "height"     : "height_rcidx",
-                  "macro type" : "mtype_rcidx",
-                  "LEF"        : "lef_rcidx",
-                  "LIB"        : "lib_rcidx"}
+    label_dict = {"width"      : "width",
+                  "height"     : "height",
+                  "macro type" : "mtype",
+                  "LEF"        : "lef",
+                  "LIB"        : "lib"}
     param_header_dict = extract_table_header(sheet,label_dict)
+    param_table = extract_table(sheet,param_header_dict)
     
     print("parameter header:",param_header_dict)
+    print("parameter table:",param_table)
 
-    label_dict = {"pin"            : "pin_col",
-                  "type"           : "type_col",
-                  "related ground" : "rel_gnd_col",
-                  "related supply" : "rel_supply_col",
-                  "x"              : "xpos_col",
-                  "y"              : "ypos_col"}
+    label_dict = {"pin"            : "pin",
+                  "type"           : "type",
+                  "related ground" : "rel_gnd",
+                  "related supply" : "rel_supply",
+                  "x"              : "xpos",
+                  "y"              : "ypos"}
     pin_header_dict = extract_table_header(sheet,label_dict)
     
     try:
-        label_dict = {"macro"          : "macro_col",
-                      "instance"       : "inst_col",
-                      "x"              : "xpos_col",
-                      "y"              : "ypos_col"}
+        label_dict = {"macro"          : "macro",
+                      "instance"       : "inst",
+                      "x"              : "xpos",
+                      "y"              : "ypos"}
         macro_header_dict = extract_table_header(sheet,label_dict)
     
         if macro_header_dict["header_row"] > pin_header_dict["header_row"]:
@@ -165,7 +186,8 @@ def extract_macro_spec_sheet(sheet):
     print("pin table:",pin_dict)
     
     macro_spec = { sheet.name : {"pin_spec"   : pin_dict,
-                                 "macro_spec" : macro_dict} }
+                                 "macro_spec" : macro_dict,
+                                 "parameters" : param_table} }
     return(macro_spec)
 
 def read_macros(spec_file):

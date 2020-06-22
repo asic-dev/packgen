@@ -160,6 +160,11 @@ class MacroListObj(PackObjList):
         self.parent = parent
 
     def add(self,id,boundary,spec = None):
+        
+        if spec is not None:
+            if ("width" in spec["parameters"]) and ("height" in spec["parameters"]):
+                boundary = [(spec["parameters"]["width"],spec["parameters"]["height"])]
+                
         macro = MacroObj(self.parent,id,boundary)
 
         if spec is not None:
