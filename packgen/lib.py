@@ -233,6 +233,12 @@ class MacroObj(ShapeObj):
         for macro in self.mlist:
             canvas.translate(macro.pos[0]*cm, macro.pos[1]*cm)
             macro.draw(canvas)
+            
+            canvas.setFillColor (black)
+            canvas.setFont("Helvetica", 2 * macro.macro.width_x)
+            canvas.drawCentredString(macro.macro.width_x * cm / 2,
+                                     macro.macro.width_y * cm / 2, macro.id)
+            
             canvas.translate(-macro.pos[0]*cm, -macro.pos[1]*cm)
 
 class MacroInstObj(PackObj):
