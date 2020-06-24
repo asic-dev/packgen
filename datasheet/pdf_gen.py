@@ -262,6 +262,7 @@ class datasheet:
             table_data.append(("macro type",macro.type))
             table_data.append(("width_x",macro.width_x))
             table_data.append(("width_y",macro.width_y))
+            table_data.append(("area",macro.width_x*macro.width_y))
             table_data.append(("number of pins",macro.plist.num_items()))
             table_data.append(("number of macros",macro.mlist.num_items()))
             table = Table(table_data)
