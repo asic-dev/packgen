@@ -259,6 +259,7 @@ class datasheet:
             #################
             doc_data.append(Paragraph("Parameters",self.style['Heading4']))
             table_data = [("parameter","value")]
+            table_data.append(("macro type",macro.type))
             table_data.append(("width_x",macro.width_x))
             table_data.append(("width_y",macro.width_y))
             table_data.append(("number of pins",macro.plist.num_items()))

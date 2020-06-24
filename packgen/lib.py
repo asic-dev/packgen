@@ -168,6 +168,10 @@ class MacroListObj(PackObjList):
         macro = MacroObj(self.parent,id,boundary)
 
         if spec is not None:
+            
+            if "mtype" in spec["parameters"] :
+                macro.type = spec["parameters"]["mtype"]
+                 
             for pin in spec["pin_spec"]:
                 pos_x = spec["pin_spec"][pin]["xpos"]
                 pos_y = spec["pin_spec"][pin]["ypos"]
@@ -209,6 +213,7 @@ class MacroObj(ShapeObj):
 
         super().__init__(identifier,boundary)
         self.parent = parent
+        self.type = "tbd"
             
         self.plist = PackObjList(self)
         self.mlist = MacroInstListObj(self)
