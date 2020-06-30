@@ -357,6 +357,22 @@ class MacroPinObj(ShapeObj):
         else:
             return(False)
             
+    def is_input(self):
+        if ( self._type == "clk_in" or
+             self._type == "sig_in" or
+             self._type == "ana_in"    ) :
+            return(True)
+        else:
+            return(False)
+            
+    def is_output(self):
+        if ( self._type == "clk_out" or
+             self._type == "sig_out" or
+             self._type == "ana_out"    ) :
+            return(True)
+        else:
+            return(False)
+            
         
         
 class PinObj(PackObj):
