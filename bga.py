@@ -9,6 +9,7 @@ from packgen.read_ballout import read_ballout
 from packgen.read_macros import read_macros
 from packgen.gen_pad_vlog import gen_pad_vlog
 from packgen.gen_liberty import gen_liberty
+from packgen.gen_vlog import gen_vlog
         
 
 #=============
@@ -72,6 +73,8 @@ macros = read_macros("spec/macros.xlsx")
 for macro_spec in macros:
     macro_obj = mars.macrolist.add(macro_spec,[(100,100)],spec = macros[macro_spec])
     gen_liberty(macro_obj)
+    gen_vlog(macro_obj)
+    
     
     
 lshape = mars.macrolist.add("L_SHAPE",[ (  0,  0) ,
