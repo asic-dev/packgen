@@ -22,6 +22,9 @@ def gen_liberty(macro):
                 f.write("        direction : input;\n")
             elif pin.is_output():
                 f.write("        direction : output;\n")
+                
+            if pin.is_input() or pin.is_output:
+                f.write("        related_ground_pin : {};\n".format(pin.get_related_ground()))
             f.write("    }\n\n")
     
     f.write("  }\n\n")

@@ -339,6 +339,9 @@ class MacroPinObj(ShapeObj):
     def set_related_ground(self,ground_pin):
         self._related_ground = ground_pin
         
+    def get_related_ground(self):
+        return(self._related_ground)
+        
     def set_related_supply(self,supply_pin):
         self._related_supply = supply_pin
         
