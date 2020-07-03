@@ -15,6 +15,23 @@ def gen_vlog(macro):
             seperator = ",\n"
 
     f.write("\n);")
+
+    f.write("\n\n")
+    f.write("  // input declarations\n")
+    f.write("  //-------------------\n\n")
+    for pin in macro.plist:
+        if pin.is_input():
+            f.write("  input {};\n".format(pin.id))
+
+    f.write("\n\n")
+    f.write("  // output declarations\n")
+    f.write("  //--------------------\n\n")
+    for pin in macro.plist:
+        if pin.is_output():
+            f.write("  output {};\n".format(pin.id))
+
+            
+    
     f.write("\n\n")
     
     f.write("endmodule\n\n")
