@@ -224,7 +224,7 @@ class MacroObj(ShapeObj):
         print("MacroObj.add_pin:",id)
         if pos is None:
             return()
-        return(self.plist.add(MacroPinObj(id,pos)))
+        return(self.plist.add(MacroPinObj(id,self.plist,pos)))
         
     def add_macro(self,id,ref,pos):
         self.mlist.add(id,ref,pos)
@@ -309,7 +309,7 @@ class NetObj(PackObj):
 
 class MacroPinObj(ShapeObj):
     
-    def __init__(self,id,pos):
+    def __init__(self,id,pinlist,pos):
             boundary = [ ( -1, -1) ,
                          (  1, -1) ,
                          (  1,  1) ,
@@ -329,6 +329,7 @@ class MacroPinObj(ShapeObj):
                 } 
             self._related_ground = "tbd"
             self._related_supply = "tbd"
+            self._pinlist = pinlist
     """
     set type of the pin
     possible types are: "clk_in", "sig_in", "sig_out", ...
@@ -340,7 +341,9 @@ class MacroPinObj(ShapeObj):
         self._related_ground = ground_pin
         
     def get_related_ground(self):
-        return(self._related_ground)
+        if self._pinlist.get(self._related_ground) is not None:
+            return(self._related_ground)
+        assert False, "related ground pin not defined"
         
     def set_related_supply(self,supply_pin):
         self._related_supply = supply_pin
