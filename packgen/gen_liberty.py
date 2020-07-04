@@ -25,9 +25,13 @@ def gen_liberty(macro):
                 
             try:
                 f.write("        related_ground_pin : {};\n".format(pin.get_related_ground()))
-#            f.write("        related_ground_pin : {};\n".format("1"))
             except:
-                None
+                f.write("        /* ERROR: related_ground_pin is not defined for pin {}*/\n".format(pin.id))
+            
+            try:
+                f.write("        related_supply_pin : {};\n".format(pin.get_related_supply()))
+            except:
+                f.write("        /* ERROR: related_supply_pin is not defined for pin {}*/\n".format(pin.id))
             
             f.write("    }\n\n")
     

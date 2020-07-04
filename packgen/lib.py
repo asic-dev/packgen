@@ -348,6 +348,11 @@ class MacroPinObj(ShapeObj):
     def set_related_supply(self,supply_pin):
         self._related_supply = supply_pin
         
+    def get_related_supply(self):
+        if self._pinlist.get(self._related_supply) is not None:
+            return(self._related_supply)
+        assert False, "related supply pin not defined"
+
     def get_type_str(self):
         return(self._type_str_dict[self._type])
     
