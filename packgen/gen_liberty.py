@@ -1,6 +1,11 @@
+from packgen.gen_header import gen_header_str
+
+
 def gen_liberty(macro):
     
     print("generate liberty file for macro",macro.id)
+    
+    gen_header_str()
     
     f = open("{}.lib".format(macro.id),"w")
     
